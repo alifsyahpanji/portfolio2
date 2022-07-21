@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Alifsyah Anime</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/style.css">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+
+    <!--React Start-->
+    <script type="text/babel">
+
+
+        /* Header */
+        function Header() {
+            return (
+                <header>
+                    <Navbar />
+                    <Carousel />
+                </header>
+            );
+        }
+
+        /* Navbar */
+        function Navbar() {
+            return (
+                <nav className="navbar bg-light">
+                    <div className="container-fluid">
+                        <a href="index.html" className="navbar-brand fw-bold titlecolor text-danger">Alifsyah Anime</a>
+                        <form className="d-flex" role="search" action="search.html">
+                            <input className="form-control me-2" type="search" placeholder="Search Anime" aria-label="Search" name="q" />
+                            <button className="btn btn-danger" type="submit">Search</button>
+                        </form>
+                    </div>
+                </nav>
+            );
+        }
+
+        /* Carousel */
+        function Carousel() {
+            return (
+                <div id="carouselExampleSlidesOnly" className="carousel slide" data-bs-ride="carousel">
+                    <div className="carousel-inner">
+                        <div className="carousel-item active">
+                            <img src="assets/banner.jpg" className="d-block w-100 imgcarheight" />
+                        </div>
+
+
+                    </div>
+                </div>
+            );
+
+        }
+
+        /* Main */
+        function Main() {
+            return (
+                <main>
+                    <SeasonNow />
+                </main>
+            );
+        }
+
+        /* Season Now */
+        function SeasonNow() {
+            return (
+                <div className="card text-center my-4 shadow ">
+                    <div className="card-header">
+                        <h5>Season Now</h5>
+                    </div>
+                    <div className="card-body">
+
+
+                        <ContentSeason />
+
+
+
+
+
+                    </div>
+                </div>
+            );
+        }
+
+        /* Content Season */
+        class ContentSeason extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {
+                    error: null,
+                    isLoaded: false,
+                    items: []
+                };
+            }
+
+            componentDidMount() {
+                fetch("https://api.jikan.moe/v4/seasons/now")
+                    .then(res => res.json())
+                    .then(
+                        (result) => {
+                            this.setState({
+                                isLoaded: true,
+                                items: result.data
+                            });
+                        },
+                        // Note: it's important to handle errors here
+                        // instead of a catch() block so that we don't swallow
+                        // exceptions from actual bugs in components.
+                        (error) => {
+                            this.setState({
+                                isLoaded: true,
+                                error
+                            });
+                        }
+                    )
+            }
+
+            render() {
+                const { error, isLoaded, items } = this.state;
+                if (error) {
+                    return <div>Error: {error.message}</div>;
+                } else if (!isLoaded) {
+                    return (
+                        <div className="d-flex justify-content-center flex-wrap">
+                            <div className="loader"></div>
+                        </div>
+                    );
+                } else {
+                    return (
+                        <div className="d-flex justify-content-center flex-wrap">
+                            {items.map(item => (
+                                <div className="card sizecontent mx-2 my-2">
+                                    <img src={item.images.jpg.image_url} className="card-img-top" alt="..." />
+                                    <div className="card-body">
+                                        <h5 className="card-title">{item.title}</h5>
+
+                                        <a href={item.trailer.url} className="btn btn-danger">Watch Trailer</a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    );
+                }
+            }
+        }
+
+
+        /* Footer */
+        function Footer() {
+            return (
+                <footer className="navcustom bg-danger">
+                    <h6 className="text-center">&copy; Copyright Alifsyah Panji 2022</h6>
+
+                </footer>
+
+            );
+
+        }
+
+        /* App */
+        function App() {
+            return (
+                <div>
+                    <Header />
+                    <Main />
+                    <Footer />
+
+                </div>
+            );
+        }
+
+        ReactDOM.render(
+            <App />,
+            document.getElementById('root')
+        );
+
+
+
+
+    </script>
+    <!--React Script End-->
+</body>
+
+</html>
